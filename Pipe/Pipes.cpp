@@ -51,7 +51,7 @@ int main( int argc, char* argv[] ){
     if(pid == (pid_t)0){
         wait(NULL);
         cout << "in child" << endl;
-        cout << "Reading from parent Pipe:" << Pipes[FROM_PARENT] << endl;
+        cout << "Reading from parent Pipe: " << Pipes[FROM_PARENT] << endl;
         string mess = readPipe(Pipes[FROM_PARENT]);
         close(Pipes[FROM_PARENT]);
         cout << "Recived message: " << mess << endl;
@@ -80,7 +80,7 @@ int main( int argc, char* argv[] ){
 }
 
 string reverseCase(string s){
-    printf("int reverse Case\n");
+    printf("in reverse Case\n");
     for(int i = 0; i < s.size(); i++){
         if(s[i] >= 'a' && s[i] <= 'z'){
             printf("%c to %c\n",s[i], s[i]+32);
@@ -95,27 +95,12 @@ string reverseCase(string s){
 }
 
 string readPipe(int fd){
-    cout << "Reading from Pipe: " << fd << endl;/*
-    FILE *in;
-    in = fdopen(fd,"r");
-    string input;
-    char c;
-    if(in == NULL) {
-        perror((char*)stderr);
-        printf("Failed to read from file descriptor: %d\n", fd);
-        exit(-1);
-    }
-    while( (c = fgetc(in)) != EOF ){
-        printf("%c", c);
-        input += c;
-    }
-    printf("\n");
-    fclose(in);*/
+    cout << "Reading from Pipe: " << fd << endl;
     int readin;
     char buffer[100];
     string input;
     printf("before read\n");
-    readin = read(fd, buffer, sizeof(buffer));
+    readin = read(fd, &buffer, sizeof(char) * 100);
     printf("after read\n");
     if( readin == -1){
         perror( (char*) stderr); 
@@ -127,15 +112,8 @@ string readPipe(int fd){
 }
 
 void writePipe(int fd, string message){
-    cout << "Writing to Pipe:" << fd << endl;
+    cout << "Writing to Pipe: " << fd << endl;
     cout << "Message: " << message << endl;
-    FILE *out;
-    out = fdopen(fd, "w");
-    int byteswritten = fprintf(out, "%s" ,message.c_str());
-    printf("bytes written: %d\n",byteswritten);
-    if(byteswritten < 0){
-        perror( (char*)stderr );
-        exit(-1);
-    }
-    fclose(out);
+    write(fd, message.c_str(), sizeof(char) * message.size());
+    printf("Message written\n");
 }
