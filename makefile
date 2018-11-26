@@ -16,4 +16,4 @@ Matrix.o: Matrix/Matrix.cpp Matrix/Matrix.hpp
 clean:
 	rm -rf *.o
 	if [ -f MatrixProgram ]; then rm MatrixProgram; fi;
-	if [ -f Pipe ]; then rm Pipe; fi;
+	if [ -f PipeProgram ]; then rm PipeProgram; fi;
