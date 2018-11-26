@@ -2,7 +2,12 @@ all: PipeProgram SharedMemProgram MatrixProgram
 
 PipeProgram: Pipe/Pipes.cpp
 	g++ Pipe/Pipes.cpp -o PipeProgram
-SharedMemProgram:
+
+SharedMemProgram: SharedMem.o
+	g++ SharedMem.o -o SharedMemoryProgram
+
+SharedMem.o: SharedMemory/SharedMem.cpp
+	g++ -c SharedMemory/SharedMem.cpp
 
 MatrixProgram: Matrix.o MatrixDriver.o
 	g++ Matrix.o MatrixDriver.o -pthread -o MatrixProgram
@@ -17,3 +22,4 @@ clean:
 	rm -rf *.o
 	if [ -f MatrixProgram ]; then rm MatrixProgram; fi;
 	if [ -f PipeProgram ]; then rm PipeProgram; fi;
+	if [ -f SharedMemoryProgram ]; then rm SharedMemoryProgram; fi;
