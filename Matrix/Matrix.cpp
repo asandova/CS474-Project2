@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -114,7 +115,52 @@ ostream& operator<<(ostream& out,const Matrix& mat){
     }
     return out;
 }
+/*
+string Matrix::fromFile(string filename){
+    int rows = 0;
+    int col = 0;
+    string matrixString = "";
+    ifstream in;
+    in.open(filename, ifstream::in);
 
+    if(in.is_open() ){
+        char C;
+        while(!in.fail()){
+            C = in.get();
+            matrixString += C;
+        }
+        matrixString.resize(matrixString.size()-1);
+    }
+    return matrixString;
+}
+
+Matrix Matrix::fromString(string sMatrix){
+    int row = 0;
+    int col = 0;
+    Matrix mat = Matrix(1,1);
+    for(int i = 0; i < sMatrix.size(); i++){
+        if(sMatrix[i] == '\n'){
+            row++;
+            mat.addRow();
+        }
+        else if( isdigit(sMatrix[i] ){
+
+            string num = "";
+            for(; i < sMatrix.size(); i++){
+                if(!isdigit(sMatrix[i])){
+                    
+
+                    break;
+                }
+                else{
+                    num += sMatrix[i];
+                }
+            }
+        }
+    }
+    return mat;
+}
+*/
 int& Matrix::at(int r, int c){
     if( (r > Rows || c > Columns)
         || (r < 0 || c < 0) ) {
@@ -132,4 +178,13 @@ int Matrix::getColumnSize()const{
 }
 int Matrix::getRowSize()const{
     return Rows;
+}
+
+void Matrix::addRow(){
+    matrix.push_back(vector<int>(Columns, 0) );
+}
+void Matrix::addColumn(){
+    for(int i = 0; i < Rows;i++){
+        matrix[i].push_back(0);
+    }
 }
