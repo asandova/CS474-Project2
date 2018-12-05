@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <string>
 #include <fstream>
+#include <ctype.h>
+#include <limits>
 
 using namespace std;
 
@@ -115,7 +117,7 @@ ostream& operator<<(ostream& out,const Matrix& mat){
     }
     return out;
 }
-/*
+
 string Matrix::fromFile(string filename){
     int rows = 0;
     int col = 0;
@@ -130,37 +132,76 @@ string Matrix::fromFile(string filename){
             matrixString += C;
         }
         matrixString.resize(matrixString.size()-1);
+    }else{
+        cout << "Error: failed to open " << filename << endl;
+        exit(-1);
     }
+    //cout << "Read From file:\n" << matrixString << endl;
     return matrixString;
+}
+
+string Matrix::removeWhiteSpace(string str){
+    string cleared = string();
+    
+    for(int i = 0; i < str.size(); i++){
+        if(!isspace(str[i]) || str[i] == '\n' ){
+            cleared += str[i];
+        }
+    }
+    //cout << "Cleaned String:\n" << cleared << endl << endl;
+    return cleared;
 }
 
 Matrix Matrix::fromString(string sMatrix){
     int row = 0;
     int col = 0;
-    Matrix mat = Matrix(1,1);
+
+    sMatrix = removeWhiteSpace(sMatrix);
+
+    vector< vector<int> >input =  vector< vector<int> >();
+
+    input.push_back( vector<int>() );
+    string num = "";
     for(int i = 0; i < sMatrix.size(); i++){
-        if(sMatrix[i] == '\n'){
+        if( sMatrix[i] == '\n' ){
+            input.push_back( vector<int>() );
+            input[row].push_back( atoi( num.c_str() ));
+            //cout << atoi(num.c_str()) << endl;
             row++;
-            mat.addRow();
+            num = "";
+            col=0;
         }
-        else if( isdigit(sMatrix[i] ){
+        else if(sMatrix[i] == ','){
+            input[row].push_back( atoi( num.c_str() ) );
+            //cout << atoi(num.c_str()) << " ";
+            num = "";
+            col++;
+        }else{
+            num += sMatrix[i];
+        }
+        if(i+1 == sMatrix.size()){
+          input[row].push_back( atoi(num.c_str()) ); 
+          //cout << atoi(num.c_str()) << endl;
+        }
 
-            string num = "";
-            for(; i < sMatrix.size(); i++){
-                if(!isdigit(sMatrix[i])){
-                    
+    }
 
-                    break;
-                }
-                else{
-                    num += sMatrix[i];
-                }
-            }
+    col = numeric_limits<int>::max();
+    for(int i = 0; i < input.size(); i++){
+        if( col > input[i].size() ){
+            col = input[i].size();
+        }
+    }
+    //cout << "Min columns: " << col << endl;
+    Matrix mat = Matrix(input.size(), col);
+    //cout << mat << endl;
+    for(int i = 0; i < input.size(); i++){
+        for(int j = 0; j < col; j++){
+            mat.at(i,j) = input[i][j];
         }
     }
     return mat;
 }
-*/
 int& Matrix::at(int r, int c){
     if( (r > Rows || c > Columns)
         || (r < 0 || c < 0) ) {
